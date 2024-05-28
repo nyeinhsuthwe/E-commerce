@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt')
 
 const UserSchema = new Schema({
   name: {
@@ -47,5 +48,19 @@ const UserSchema = new Schema({
     select: false,
   },
 });
+
+
+UserSchema.static.login = async function(email,password){
+  let user = await this.findOne({email});
+  if(!user){
+    throw new Error('User does not exist!')
+  }
+  let isCorrect = await bcrypt.compare(password, user.password);
+  if(isCorrect){
+    return user;
+  }else{
+    throw new Error('Password is not match!')
+  }
+}
 
 module.exports = mongoose.model("User", UserSchema);
