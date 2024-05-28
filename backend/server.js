@@ -1,25 +1,21 @@
-const express = require("express");
-require("dotenv").config("");
-const morgan = require("morgan");
-const mongoose = require('mongoose');
-const usersRoutes = require('./routes/usersAuthentication');
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
-const app = express();
-const mongoURL = "mongodb+srv://nhtnht:e123@cluster2.7gdfh6s.mongodb.net/?retryWrites=true&w=majority&appName=Cluster2"
-mongoose.connect(mongoURL).then(()=>{
-    console.log('connected to db');
-    app.listen(process.env.PORT, () => {
-        console.log("app is running on port 8000");
-      });
-})
+dotenv.config({ path: "./config.env" });
 
-app.use(express.json());
-app.use(morgan("dev"));
-app.use(usersRoutes);
+const app = require("./app");
 
-app.get("/", (req, res) => {
-  return res.json({ hello: "world" });
+const DB = process.env.DB;
+
+console.log(DB);
+
+mongoose.connect(DB).then((con) => {
+  console.log(con.connection.host);
+  console.log("Database connection established!");
 });
 
-app.use('/api/users',usersRoutes)
+const port = process.env.PORT || 8000;
 
+const server = app.listen(port, () => {
+  console.log(`App listening on ${port}`);
+});
