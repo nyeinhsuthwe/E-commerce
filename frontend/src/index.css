@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    /* bg img is just testing for bg blur */
+    /* background-image: url('./assets/th.jpg'); */ 
+  }
