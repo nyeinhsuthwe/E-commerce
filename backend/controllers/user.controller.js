@@ -10,30 +10,30 @@ const generateToken = (id) => {
 };
 
 const userController = {
-  login : async (req,res) => {
-    try {
-      let {email, password}= req.body;
-      const user = await User.login(
-        email,
-        password,
-        {role: req.body.role,}
-      );
+//   login : async (req,res) => {
+//     try {
+//       let {email, password}= req.body;
+//       const user = await User.login(
+//         email,
+//         password,
+//         {role: req.body.role,}
+//       );
 
-      const token = generateToken(user._id);
+//       const token = generateToken(user._id);
 
-      return res.status(201).json({
-        status: "success",
-        token,
-        user
-      });
+//       return res.status(201).json({
+//         status: "success",
+//         token,
+//         user
+//       });
       
-    } catch (error) {
-      res.status(400).json({
-        status: "fail",
-        message: error.message,
-      });
-    }
-},
+//     } catch (error) {
+//       res.status(400).json({
+//         status: "fail",
+//         message: error.message,
+//       });
+//     }
+// },
 
   register: async (req, res) => {
     try {
