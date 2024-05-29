@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const Schema = mongoose.Schema;
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema({
   name: {
@@ -49,18 +49,20 @@ const UserSchema = new Schema({
   },
 });
 
+UserSchema.pre("save", async function (next) {
+  const salt = await bcrypt.genSalt();
+  const hashPassword = await bcrypt.hash(this.password, salt);
+  this.password = hashPassword;
+  console.log(this.password);
+  this.passwordConfirmed = undefined;
+  next();
+});
 
-UserSchema.static.login = async function(email,password){
-  let user = await this.findOne({email});
-  if(!user){
-    throw new Error('User does not exist!')
-  }
-  let isCorrect = await bcrypt.compare(password, user.password);
-  if(isCorrect){
-    return user;
-  }else{
-    throw new Error('Password is not match!')
-  }
-}
+UserSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 module.exports = mongoose.model("User", UserSchema);
