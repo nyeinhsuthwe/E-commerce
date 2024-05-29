@@ -13,20 +13,18 @@ const userController = {
   login : async (req,res) => {
     try {
       let {email, password}= req.body;
-      const user = await User.login({
+      const user = await User.login(
         email,
         password,
-        role: req.body.role,
-      });
+        {role: req.body.role,}
+      );
 
-      const token = generateToken(newUser._id);
+      const token = generateToken(user._id);
 
-      res.status(201).json({
+      return res.status(201).json({
         status: "success",
         token,
-        data: {
-          user: user,
-        },
+        user
       });
       
     } catch (error) {
@@ -68,6 +66,7 @@ const userController = {
       });
     }
   },
+
 };
 
 module.exports = userController;

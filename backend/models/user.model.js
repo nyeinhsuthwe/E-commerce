@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt')
 
 const UserSchema = new Schema({
+  
   name: {
     type: String,
     required: [true, "Please tell us your name!"],
@@ -47,10 +48,12 @@ const UserSchema = new Schema({
     type: Boolean,
     select: false,
   },
+
+  
 });
 
 
-UserSchema.static.login = async function(email,password){
+UserSchema.statics.login = async function(email,password){
   let user = await this.findOne({email});
   if(!user){
     throw new Error('User does not exist!')
