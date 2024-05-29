@@ -1,7 +1,5 @@
-const User = require('../models/user.model');
-const mongoose = require('mongoose');
+const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
-const bcrypt = require('bcrypt')
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -10,21 +8,26 @@ const generateToken = (id) => {
 };
 
 const userController = {
-  login : async (req,res) => {
+  login: async (req, res) => {
     try {
-      let {email, password}= req.body;
-      const user = await User.login(
-        email,
-        password,
-        {role: req.body.role,}
-      );
+      const { email, password } = req.body;
+      if (!email || !password) {
+        throw new Error("Please provide email and password!");
+      }
 
+      const user = await User.findOne({ email }).select("+password");
+
+      if (!user || !await user.correctPassword((password, user.password))) {
+        throw new Error("Incorrect email or password! Please try again!");
+      }
       const token = generateToken(user._id);
 
-      return res.status(201).json({
+      res.status(201).json({
         status: "success",
         token,
-        user
+        data: {
+          user: user,
+        },
       });
       
     } catch (error) {
@@ -51,7 +54,6 @@ const userController = {
       });
 
       const token = generateToken(newUser._id);
-
       res.status(201).json({
         status: "success",
         token,
@@ -66,7 +68,6 @@ const userController = {
       });
     }
   },
-
 };
 
 module.exports = userController;

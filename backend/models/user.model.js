@@ -27,9 +27,9 @@ const UserSchema = new Schema({
   },
   password: {
     type: String,
+    select: false,
     required: [true, "Please provide a password!"],
     minlength: 8,
-    select: false,
   },
   passwordConfirmed: {
     type: String,
@@ -52,6 +52,24 @@ const UserSchema = new Schema({
   
 });
 
+//To Exclude password from the response
+UserSchema.set("toJSON", {
+  transform: function (doc, ret, opt) {
+    delete ret["password"];
+    return ret;
+  },
+});
+
+UserSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  const salt = await bcrypt.genSalt(12);
+  const hashPassword = await bcrypt.hash(this.password, salt);
+  this.password = hashPassword;
+  this.passwordConfirmed = undefined;
+  next();
+});
 
 UserSchema.statics.login = async function(email,password){
   let user = await this.findOne({email});
@@ -66,4 +84,6 @@ UserSchema.statics.login = async function(email,password){
   }
 }
 
-module.exports = mongoose.model("User", UserSchema);
+const User = mongoose.model("User", UserSchema);
+
+module.exports = User;
