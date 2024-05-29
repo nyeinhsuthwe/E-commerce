@@ -15,7 +15,7 @@ export default function Navbar() {
                 <li><Link to="/" className='hover:text-orange-500'>Home</Link></li>
             </ul>
           
-          <NavLink to='/login'><button className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-5 text-sm rounded-xl">Login</button></NavLink>
+          <NavLink to='/login'><button className="bg-purple-700 hover:bg-orange-500 text-white font-bold py-2 px-5 text-sm rounded-xl">Login</button></NavLink>
         </nav>
     </div>
   )

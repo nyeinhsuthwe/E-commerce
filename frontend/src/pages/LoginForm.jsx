@@ -30,7 +30,7 @@ export default function LoginForm() {
   return (
     <>
      <div className="w-full max-w-xs pt-11 ml-48 mt-16">
-      <form  onSubmit={login} className="backdrop-blur-sm bg-white/30 shadow-lg rounded px-8 pt-6 pb-8 rounded-3xl">
+      <form  onSubmit={login} className="backdrop-blur-lg bg-white/10 shadow-lg rounded px-8 pt-6 pb-8 rounded-3xl">
         <p className="text-3xl mb-7 font-bold text-gray-600 " >Sign in</p>
         <div className="mb-4">
           <label className="block text-gray-600 text-xs font-semibold mb-2">Email</label>
@@ -43,8 +43,8 @@ export default function LoginForm() {
           {!!(error) && <p className="text-red-500 text-xs italic">{error}</p>}
         </div>
         <div className="flex justify-between mb-6">
-        <button className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-5 text-sm rounded-xl" type="submit">Login</button>
-        <p className="text-xs font-semibold text-orange-400">forget password?</p>
+        <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-5 text-sm rounded-xl" type="submit">Login</button>
+        <p className="text-xs font-semibold text-orange-600">forget password?</p>
         </div>
         <p className="text-xs font-semibold text-gray-600 text-center"> Do not have Account? <Link className="font-bold" to='/register'>Sign Up</Link></p>
       </form>

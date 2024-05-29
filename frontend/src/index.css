@@ -3,6 +3,5 @@
 @tailwind utilities;
 
 body{
-    /* bg img is just testing for bg blur */
-    /* background-image: url('./assets/th.jpg'); */ 
-  }
+    background-image: url('./assets/photo_2024-05-29_23-07-12.jpg'); 
+}
