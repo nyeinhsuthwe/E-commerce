@@ -10,27 +10,12 @@ const generateToken = (id) => {
 };
 
 const userController = {
-  login: async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      if (!email || !password) {
-        throw new Error("Please provide email and password!");
-      }
+  
 
-      const user = await User.findOne({ email }).select("+password");
-
-      if (!user || !(await user.correctPassword(password, user.password))) {
-        throw new Error("Incorrect email or password! Please try again!");
-      }
-
-      const token = generateToken(user._id);
-
-      res.status(201).json({
+      return res.status(201).json({
         status: "success",
         token,
-        data: {
-          user: user,
-        },
+        user
       });
     } catch (error) {
       res.status(400).json({
@@ -60,6 +45,7 @@ const userController = {
       });
     }
   },
+
 };
 
 module.exports = userController;

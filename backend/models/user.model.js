@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema({
+  
   name: {
     type: String,
     required: [true, "Please tell us your name!"],
@@ -47,6 +48,8 @@ const UserSchema = new Schema({
     type: Boolean,
     select: false,
   },
+
+  
 });
 
 UserSchema.pre("save", async function (next) {
@@ -58,11 +61,5 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-UserSchema.methods.correctPassword = async function (
-  candidatePassword,
-  userPassword
-) {
-  return await bcrypt.compare(candidatePassword, userPassword);
-};
 
 module.exports = mongoose.model("User", UserSchema);
