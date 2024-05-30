@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const Schema = mongoose.Schema;
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema({
-  
   name: {
     type: String,
     required: [true, "Please tell us your name!"],
@@ -48,8 +47,6 @@ const UserSchema = new Schema({
     type: Boolean,
     select: false,
   },
-
-  
 });
 
 //To Exclude password from the response
@@ -71,18 +68,12 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-UserSchema.statics.login = async function(email,password){
-  let user = await this.findOne({email});
-  if(!user){
-    throw new Error('User does not exist!')
-  }
-  let isCorrect = await bcrypt.compare(password, user.password);
-  if(isCorrect){
-    return user;
-  }else{
-    throw new Error('Password is not match!')
-  }
-}
+UserSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 const User = mongoose.model("User", UserSchema);
 
