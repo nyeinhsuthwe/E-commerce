@@ -17,9 +17,10 @@ const userController = {
 
       const user = await User.findOne({ email }).select("+password");
 
-      if (!user || !await user.correctPassword((password, user.password))) {
+      if (!user || !(await user.correctPassword(password, user.password))) {
         throw new Error("Incorrect email or password! Please try again!");
       }
+
       const token = generateToken(user._id);
 
       res.status(201).json({
@@ -29,29 +30,17 @@ const userController = {
           user: user,
         },
       });
-      
     } catch (error) {
       res.status(400).json({
         status: "fail",
         message: error.message,
       });
     }
-},
+  },
 
   register: async (req, res) => {
     try {
-      let {name, email, password, passwordConfirmed}=req.body;
-
-      let salt = await bcrypt.genSalt();
-      let hashValue = await bcrypt.hash(password,salt);
-
-      const newUser = await User.create({
-        name,
-        email,
-        password: hashValue,
-        passwordConfirmed : hashValue,
-        role: req.body.role,
-      });
+      const newUser = await User.create(req.body);
 
       const token = generateToken(newUser._id);
       res.status(201).json({
