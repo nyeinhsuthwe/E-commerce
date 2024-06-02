@@ -15,6 +15,19 @@ export const loginUser = async (credentials) => {
   }
 };
 
+export const registerUser = async (credentials) => {
+  try {
+    const { data } = await axios.post(`${baseUrl}/users/register`, credentials, {
+      withCredentials: true,
+    });
+    console.log("baseurl===============>", baseUrl);
+    return data;
+  } catch (error) {
+    console.error("Error try to log in", error);
+    throw error;
+  }
+};
+
 export const fetchUser = async () => {
   const token = localStorage.getItem("token");
   if (!token) {
