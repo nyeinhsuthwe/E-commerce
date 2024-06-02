@@ -17,13 +17,17 @@ export const loginUser = async (credentials) => {
 
 export const registerUser = async (credentials) => {
   try {
-    const { data } = await axios.post(`${baseUrl}/users/register`, credentials, {
-      withCredentials: true,
-    });
+    const { data } = await axios.post(
+      `${baseUrl}/users/register`,
+      credentials,
+      {
+        withCredentials: true,
+      }
+    );
     console.log("baseurl===============>", baseUrl);
     return data;
   } catch (error) {
-    console.error("Error try to log in", error);
+    console.error("Error try to register", error);
     throw error;
   }
 };

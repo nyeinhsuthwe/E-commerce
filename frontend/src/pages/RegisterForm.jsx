@@ -1,28 +1,36 @@
 import { useState } from "react";
-import { Link , useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 export default function RegisterForm() {
   let [name, setName] = useState("");
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
-  let [cpassword, setCpassword] = useState("");
-  const { user, register, registerError } = useAuth();
+  let [passwordConfirmed, setPasswordConfirmed] = useState("");
+  const { user, registerMutation, registerError } = useAuth();
   const navigate = useNavigate();
 
-  const userRegister = async(e)=>{
+  const userRegister = async (e) => {
     e.preventDefault();
-    await register.mutateAsync({ name,email, password, cpassword });
+    await registerMutation.mutateAsync({
+      name,
+      email,
+      password,
+      passwordConfirmed,
+    });
     console.log(user);
     if (user) {
       navigate("/dashboard");
     }
-  }
+  };
 
   return (
     <div className="flex">
       <div className="w-full max-w-sm pt-11 ml-48 mt-16">
-        <form onSubmit={(e)=>userRegister(e)} className="backdrop-blur-lg bg-white/10 shadow-lg px-8 pt-6 pb-8 rounded-3xl">
+        <form
+          onSubmit={(e) => userRegister(e)}
+          className="backdrop-blur-lg bg-white/10 shadow-lg px-8 pt-6 pb-8 rounded-3xl"
+        >
           <p className="text-3xl mb-4 font-bold text-gray-600 ">
             Register Form
           </p>
@@ -33,9 +41,9 @@ export default function RegisterForm() {
             </label>
             <input
               value={name}
-              onChange={ e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               className="shadow appearance-none border w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xs rounded-2xl"
-              id="email"
+              id="name"
               type="text"
               placeholder="Enter your Name"
             ></input>
@@ -47,7 +55,7 @@ export default function RegisterForm() {
             </label>
             <input
               value={email}
-              onChange={ e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               className="shadow appearance-none border w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xs rounded-2xl"
               id="email"
               type="text"
@@ -61,7 +69,7 @@ export default function RegisterForm() {
             </label>
             <input
               value={password}
-              onChange={ e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               type="password"
               className="shadow appearance-none border w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xs rounded-2xl"
               id="password"
@@ -74,11 +82,10 @@ export default function RegisterForm() {
               confirm Password
             </label>
             <input
-              value={cpassword}
-              onChange={ e => setCpassword(e.target.value)}
+              value={passwordConfirmed}
+              onChange={(e) => setPasswordConfirmed(e.target.value)}
               type="password"
               className="shadow appearance-none border w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xs rounded-2xl"
-              id="password"
               placeholder="Confirm your Password"
             ></input>
           </div>
