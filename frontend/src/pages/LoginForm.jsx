@@ -1,19 +1,19 @@
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 export default function LoginForm() {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
-  const { login, error } = useAuth();
-  console.log(error);
+  const { user, login, loginError } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await login.mutate({ email, password });
-    } catch (error) {
-      console.error("Login error:", error);
+    await login.mutateAsync({ email, password });
+    console.log(user);
+    if (user) {
+      navigate("/");
     }
   };
 
@@ -51,9 +51,9 @@ export default function LoginForm() {
               placeholder="Enter your Password"
             ></input>
           </div>
-          {!!error && (
+          {!!loginError && (
             <p className="text-orange-700 text-xs font-semibold mb-3">
-              {error}
+              {loginError}
             </p>
           )}
           <div className="flex justify-between mb-6">
