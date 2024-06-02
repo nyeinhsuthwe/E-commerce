@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
 import { loginUser, fetchUser } from "../services/authentication";
@@ -8,34 +8,47 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const queryClient = useQueryClient();
-  const token = localStorage.getItem("token");
   const [loginError, setLoginError] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  );
+
+  console.log("isAuthenticated", isAuthenticated);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["user"],
     queryFn: fetchUser,
-    enabled: !!token,
-    onError: () => {
-      localStorage.removeItem("token");
-    },
+    enabled: isAuthenticated,
   });
 
-  console.log(data);
+  console.log("USER DATA", data);
 
   const loginMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
       queryClient.invalidateQueries(["user"]);
       localStorage.setItem("token", data.token);
+      setIsAuthenticated(true);
     },
     onError: (error) => {
       setLoginError(error?.response?.data.message);
     },
   });
 
+  useEffect(() => {
+    setIsAuthenticated(!!localStorage.getItem("token"));
+  }, []);
+
   return (
     <AuthContext.Provider
-      value={{ user: data, login: loginMutation, isLoading, error, loginError }}
+      value={{
+        user: data,
+        login: loginMutation,
+        isLoading,
+        error,
+        loginError,
+        isAuthenticated,
+      }}
     >
       {children}
     </AuthContext.Provider>

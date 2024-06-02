@@ -13,10 +13,9 @@ export default function LoginForm() {
     await login.mutateAsync({ email, password });
     console.log(user);
     if (user) {
-      navigate("/");
+      navigate("/dashboard");
     }
   };
-
   return (
     <div className="flex">
       <div className="w-full max-w-sm pt-11 ml-48 mt-16">
