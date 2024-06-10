@@ -2,10 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-image: url("./assets/photo_2024-05-29_23-07-12.jpg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  height: 100vh;
-}

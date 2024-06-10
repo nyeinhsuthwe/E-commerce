@@ -17,7 +17,7 @@ export default function LoginForm() {
     }
   };
   return (
-    <div className="flex">
+    <div className="flex bg-[url('/src/assets/photo_2024-05-29_23-07-12.jpg')] bg-no-repeat bg-center bg-cover h-100vh">
       <div className="w-full max-w-sm pt-11 ml-48 mt-16">
         <form
           onSubmit={(e) => handleSubmit(e)}
@@ -75,7 +75,7 @@ export default function LoginForm() {
           </p>
         </form>
       </div>
-
+       
       <img
         src="../src/assets/th__1_-removebg-preview.png"
         className="h-44 mt-80 ml-24"

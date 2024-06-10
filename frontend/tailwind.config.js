@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        'bgimg': "url('/src/assets/photo_2024-05-29_23-07-12.jpg')",
+      }
     },
   },
   plugins: [],
