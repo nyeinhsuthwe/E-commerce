@@ -1,68 +1,67 @@
 /* eslint-disable react/prop-types */
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-
 import { loginUser, fetchUser, registerUser } from "../services/authentication";
+import { useToast } from "@/components/ui/use-toast";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const queryClient = useQueryClient();
-  const [loginError, setLoginError] = useState("");
-  const [registerError, setRegisterError]= useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("token")
-  );
+  const storedUser = localStorage.getItem("user");
+  const [user, setUser] = useState(storedUser ? JSON.parse(storedUser) : null);
+  const { toast } = useToast();
 
-  console.log("isAuthenticated", isAuthenticated);
-
-  const { data, isLoading, error } = useQuery({
+  const {
+    data: fetchedUser,
+    isLoading,
+    error,
+    isSuccess,
+  } = useQuery({
     queryKey: ["user"],
     queryFn: fetchUser,
-    enabled: isAuthenticated,
+    enabled: !!user,
+    retry: false,
+    onSuccess: (data) => {
+      setUser(data.data.user);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
+    },
   });
-
-  console.log("USER DATA", data);
 
   const loginMutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
+      setUser(data.data.user);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
       queryClient.invalidateQueries(["user"]);
-      localStorage.setItem("token", data.token);
-      setIsAuthenticated(true);
     },
-    onError: (error) => {
-      setLoginError(error?.response?.data.message);
+    onError: (data) => {
+      toast({
+        title: "Error",
+        description: data.response.data.message,
+        variant: "destructive",
+      });
     },
   });
 
   const registerMutation = useMutation({
     mutationFn: registerUser,
     onSuccess: (data) => {
+      setUser(data.data.user);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
       queryClient.invalidateQueries(["user"]);
-      localStorage.setItem("token", data.token);
-      setIsAuthenticated(true);
-    },
-    onError: (error) => {
-      setRegisterError(error?.response?.data.message);
     },
   });
-
-  useEffect(() => {
-    setIsAuthenticated(!!localStorage.getItem("token"));
-  }, []);
 
   return (
     <AuthContext.Provider
       value={{
-        user: data,
+        user: fetchedUser || user,
         login: loginMutation,
-        registerMutation,
+        register: registerMutation,
         isLoading,
         error,
-        registerError,
-        loginError,
-        isAuthenticated,
+        isSuccess,
       }}
     >
       {children}
