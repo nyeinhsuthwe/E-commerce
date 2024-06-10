@@ -23,10 +23,16 @@ const userController = {
       }
 
       const token = generateToken(user._id);
+      res.cookie("accessToken", token, {
+        expires: new Date(
+          Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true,
+        secure: true,
+      });
 
       res.status(201).json({
         status: "success",
-        token,
         data: {
           user: user,
         },
@@ -44,9 +50,16 @@ const userController = {
       const newUser = await User.create(req.body);
 
       const token = generateToken(newUser._id);
+      res.cookie("accessToken", token, {
+        expires: new Date(
+          Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true,
+        secure: true,
+      });
+
       res.status(201).json({
         status: "success",
-        token,
         data: {
           user: newUser,
         },
@@ -59,20 +72,10 @@ const userController = {
     }
   },
   authMiddleware: async (req, res, next) => {
-    console.log(req.headers);
-    let token;
     try {
-      if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith("Bearer")
-      ) {
-        token = req.headers.authorization.split(" ")[1];
-        console.log(token);
-      }
-
+      const token = req.cookies.accessToken;
       if (!token) {
         throw new Error("You're not logged in! Please login to get access.");
-        next();
       }
 
       const decoded = await promisify(jwt.verify)(
@@ -82,14 +85,12 @@ const userController = {
 
       //check if the user still exists
       const currentUser = await User.findById(decoded.id);
-      console.log(currentUser);
       if (!currentUser) {
         return next(
           new Error("The user belonging to this token does not exist.")
         );
       }
       req.user = currentUser;
-      console.log("REQ use", req.user);
       next();
     } catch (error) {
       next(error);

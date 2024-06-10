@@ -5,16 +5,14 @@ import { useAuth } from "../hooks/useAuth";
 export default function LoginForm() {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
-  const { user, login, loginError } = useAuth();
+  const { login, error } = useAuth();
   const navigate = useNavigate();
+  console.log("Error from Login Form", error);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login.mutateAsync({ email, password });
-    console.log(user);
-    if (user) {
-      navigate("/dashboard");
-    }
+    navigate("/");
   };
   return (
     <div className="flex bg-[url('/src/assets/photo_2024-05-29_23-07-12.jpg')] bg-no-repeat bg-center bg-cover h-100vh">
@@ -50,11 +48,6 @@ export default function LoginForm() {
               placeholder="Enter your Password"
             ></input>
           </div>
-          {!!loginError && (
-            <p className="text-orange-700 text-xs font-semibold mb-3">
-              {loginError}
-            </p>
-          )}
           <div className="flex justify-between mb-6">
             <button
               className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-5 text-sm rounded-xl"
