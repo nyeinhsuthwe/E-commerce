@@ -1,55 +1,32 @@
-import axios from "axios";
+import { axiosApi } from "../utils/axios";
 
-const baseUrl = "http://localhost:8000/api/v1";
-
-export const loginUser = async (credentials) => {
+export const loginUser = async (data) => {
   try {
-    const { data } = await axios.post(`${baseUrl}/users/login`, credentials, {
-      withCredentials: true,
-    });
-    console.log("baseurl===============>", baseUrl);
-    return data;
+    const response = await axiosApi.post(`/users/login`, data);
+    console.log("Response From Login", response);
+    return response.data;
   } catch (error) {
-    console.error("Error try to log in", error);
+    console.error("Error trying to log in", error);
     throw error;
   }
 };
 
-export const registerUser = async (credentials) => {
+export const registerUser = async (data) => {
   try {
-    const { data } = await axios.post(
-      `${baseUrl}/users/register`,
-      credentials,
-      {
-        withCredentials: true,
-      }
-    );
-    console.log("baseurl===============>", baseUrl);
-    return data;
+    const response = await axiosApi.post(`/users/register`, data);
+    return response.data;
   } catch (error) {
-    console.error("Error try to register", error);
+    console.error("Error trying to register", error);
     throw error;
   }
 };
 
 export const fetchUser = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new Error("Token not found");
+  try {
+    const response = await axiosApi.get(`/users/me`);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching user", error);
+    throw error;
   }
-  console.log("TOKEN", token);
-  const { data } = await axios.get(`${baseUrl}/users/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return data;
 };
-
-// export const fetchUser = async () => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve({ id: 1, name: "John Doe", role: "user" });
-//     }, 1000);
-//   });
-// };

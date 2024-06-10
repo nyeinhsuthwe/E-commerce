@@ -7,21 +7,19 @@ export default function RegisterForm() {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
   let [passwordConfirmed, setPasswordConfirmed] = useState("");
-  const { user, registerMutation, registerError } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const userRegister = async (e) => {
     e.preventDefault();
-    await registerMutation.mutateAsync({
+    await register.mutateAsync({
       name,
       email,
       password,
       passwordConfirmed,
     });
-    console.log(user);
-    if (user) {
-      navigate("/dashboard");
-    }
+
+    navigate("/");
   };
 
   return (
@@ -89,11 +87,7 @@ export default function RegisterForm() {
               placeholder="Confirm your Password"
             ></input>
           </div>
-          {!!registerError && (
-            <p className="text-orange-700 text-xs font-semibold mb-3">
-              {registerError}
-            </p>
-          )}
+          <p className="text-orange-700 text-xs font-semibold mb-3"></p>
           <div className="flex justify-between mb-6 mt-4">
             <button
               className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-5 text-sm rounded-xl"

@@ -1,7 +1,8 @@
 const morgan = require("morgan");
 const express = require("express");
 const routes = require("./routes/v1");
-const cors = require('cors')
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -11,18 +12,19 @@ console.log("Node Env Variables", process.env.NODE_ENV);
  * 1) Global Middlewares
  */
 
-
 //Development logging
 if (process.env.NODE_ENV === "production") {
   app.use(morgan("dev"));
 }
 
-app.use(cors(
-  {
-      origin : "http://localhost:5173",
-      credentials : true
-  }
-));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
+app.use(cookieParser());
 
 //Body parser, reading data from body into req.body
 app.use(express.json());
@@ -39,4 +41,3 @@ app.use((req, res, next) => {
 app.use("/api/v1", routes);
 
 module.exports = app;
-
