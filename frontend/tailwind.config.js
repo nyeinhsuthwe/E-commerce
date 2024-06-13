@@ -1,13 +1,15 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
+
+// eslint-disable-next-line no-undef
 module.exports = {
   darkMode: ["class"],
-  content: [
-    './pages/**/*.{js,jsx}',
-    './components/**/*.{js,jsx}',
-    './app/**/*.{js,jsx}',
-    './src/**/*.{js,jsx}',
-  ],
-  prefix: "",
+  content: ['./pages/**/*.{js,jsx}',
+  './components/**/*.{js,jsx}',
+  './app/**/*.{js,jsx}',
+  './src/**/*.{js,jsx}',
+],
+prefix: "",
   theme: {
     container: {
       center: true,

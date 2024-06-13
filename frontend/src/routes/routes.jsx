@@ -3,7 +3,6 @@ import LoginForm from "../pages/LoginForm";
 import RegisterForm from "../pages/RegisterForm";
 import PrivateRoute from "../components/PrivateRoute";
 import Dashboard from "../pages/Dashboard";
-import AdminPage from '../pages/admin/AdminPage'
 
 export const router = createBrowserRouter([
   {
@@ -21,11 +20,7 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <Dashboard />,
-      },
-      {
-        path: "/admin-page",
-        element: <AdminPage/>,
-      },
+      }
     ],
   },
 ]);
