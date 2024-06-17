@@ -1,79 +1,101 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 export default function LoginForm() {
-  let [email, setEmail] = useState("");
-  let [password, setPassword] = useState("");
-  const { login, error } = useAuth();
+  const { login, isLoading } = useAuth();
   const navigate = useNavigate();
-  console.log("Error from Login Form", error);
+  const loginFormSchema = z.object({
+    email: z
+      .string()
+      .min(1, { message: "This field has to be filled." })
+      .email("This is not a valid email."),
+    password: z
+      .string()
+      .min(1, { message: "This field has to be filled." })
+      .min(6),
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await login.mutateAsync({ email, password });
+  const form = useForm({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const handleSubmit = async (values) => {
+    await login.mutateAsync(values);
     navigate("/");
   };
   return (
-    <div className="flex bg-[url('/src/assets/photo_2024-05-29_23-07-12.jpg')] bg-no-repeat bg-center bg-cover h-100vh">
-      <div className="w-full max-w-sm pt-11 ml-48 mt-16">
-        <form
-          onSubmit={(e) => handleSubmit(e)}
-          className="backdrop-blur-lg bg-white/10 shadow-lg  px-8 pt-6 pb-8 rounded-3xl"
-        >
-          <p className="text-3xl mb-7 font-bold text-gray-600 ">Sign in</p>
-          <div className="mb-4">
-            <label className="block text-gray-600 text-xs font-semibold mb-2">
-              Email
-            </label>
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="shadow appearance-none border  w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xs rounded-2xl"
-              id="email"
-              type="text"
-              placeholder="Enter your Email"
-            ></input>
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-600 text-xs font-semibold mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="shadow appearance-none border w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-xs rounded-2xl"
-              id="password"
-              placeholder="Enter your Password"
-            ></input>
-          </div>
-          <div className="flex justify-between mb-6">
-            <button
-              className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-5 text-sm rounded-xl"
-              type="submit"
-            >
-              Login
-            </button>
-            <p className="text-xs font-semibold text-orange-700 mt-3">
-              <Link>forget password?</Link>
+    <div className="container flex items-center h-screen px-8">
+      <div className="w-full max-w-sm">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4 backdrop-blur-lg bg-white/10 shadow-lg px-8 pt-6 pb-8 rounded-3xl"
+          >
+            <h2 className="text-3xl mb-4 font-bold text-gray-600 ">Login</h2>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="Email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />{" "}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="Password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
+              ) : (
+                "Login"
+              )}
+            </Button>
+            <p className="font-semibold text-xs text-gray-600 text-center">
+              {" "}
+              First time?{" "}
+              <Link className="font-bold" to="/register">
+                Create your account
+              </Link>
             </p>
-          </div>
-          <p className="text-xs font-semibold text-gray-600 text-center">
-            {" "}
-            Do not have Account?{" "}
-            <Link className="font-bold" to="/register">
-              Sign Up
-            </Link>
-          </p>
-        </form>
+          </form>
+        </Form>
       </div>
-       
-      <img
-        src="../src/assets/th__1_-removebg-preview.png"
-        className="h-44 mt-80 ml-24"
-      />
-      <img src="../src/assets/3D-uv-04-removebg-preview.png" alt="" />
     </div>
   );
 }

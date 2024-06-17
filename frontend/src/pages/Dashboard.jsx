@@ -1,9 +1,11 @@
-import { Button } from "@/components/ui/button";
+import Header from "@/components/Header";
+import SideNav from "@/components/SideNav";
 
 export default function Dashboard() {
   return (
-    <div className="">
-      <Button>Hello There</Button>
+    <div className="flex min-h-screen w-full flex-col bg-muted/40">
+      <SideNav />
+      <Header />
     </div>
   );
 }
